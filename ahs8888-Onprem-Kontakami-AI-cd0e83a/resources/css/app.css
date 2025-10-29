@@ -1,0 +1,349 @@
+@import url('https://fonts.googleapis.com/css2?family=Krub:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+@import 'tailwindcss';
+@plugin '@tailwindcss/forms';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+
+    --color-body: #F4F6FA;
+    --color-red: #FF0000;
+    --color-primary: #3943B7;
+    --color-kuning: #FEB500;
+    --color-dark: #25213B;
+    --color-online : #38A363;
+    --color-offline : #FE4C4C;
+    --color-success : #029E2D;
+    --color-blue : #3AA0FF;
+    --color-dark-grey: #3F4254;
+    --color-darkest: #0E0F0F;
+    --color-unread: #E6F5EA;
+    --color-neutral-80: #404040;
+
+    --font-krub: 'Krub';
+    --spacing-sidebar: '250px';
+
+}
+
+
+::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 7px;
+    height: 7px;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 7px;
+    background-color: #606060;
+    -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
+}
+
+#app {
+    height: 100%;
+}
+.shadow-none {
+    box-shadow: none !important;
+}
+.outline-none {
+    outline: none !important;
+}
+input,
+textarea,
+select {
+    border-color: #e5e7eb !important;
+}
+
+* {
+    @apply font-krub border-[#e5e7eb];
+}
+
+
+.main-sidebar,
+.app-wrapper {
+    transition: 0.5s;
+}
+
+body.sidebar-collapse .main-sidebar {
+    /* margin-left: -190px; */
+    width: 70px;
+}
+
+.main-sidebar nav .nav-item.has-submenu.show .nav-parent::after {
+    content: "\ebe7";
+}
+
+
+body .main-sidebar nav.main-nav {
+    background-color: #3943B7;
+    color: white;
+}
+
+body.sidebar-collapse .main-sidebar nav.main-nav {
+    color: #3943B7;
+}
+
+body.sidebar-collapse .app-wrapper {
+    padding-left: 70px;
+}
+
+body.sidebar-collapse .main-sidebar nav .nav-item.has-submenu .nav-parent::after {
+    content: '';
+}
+
+body.sidebar-collapse .main-sidebar nav .nav-item.has-submenu .nav-parent {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+body.sidebar-collapse .main-sidebar nav .nav-item {
+    position: relative;
+    width: 100%;
+}
+
+body.sidebar-collapse .main-sidebar nav .nav-item a {
+    display: flex;
+    justify-content: center;
+}
+
+body.sidebar-collapse .main-sidebar nav.main-nav {
+    overflow: inherit;
+}
+
+body.sidebar-collapse .main-sidebar nav .nav-item .menu-name {
+    display: none;
+}
+
+body.sidebar-collapse .submenu.collapse.show {
+    visibility: hidden;
+    height: 0;
+    margin-top: 0px;
+}
+
+body.sidebar-collapse .main-sidebar nav .nav-item:hover .menu-name {
+    display: flex;
+    position: absolute;
+    left: 0px;
+    top: 2px;
+    background: #fff;
+    padding: 14px 14px;
+    white-space: nowrap;
+    border-left: 0;
+    border-radius: 6px;
+    width: 175px;
+    border-right: 1px solid #e5e7eb;
+    gap: 32px;
+    align-items: center;
+}
+
+body.sidebar-collapse .main-sidebar nav .nav-item:hover .menu-name svg {
+    fill: #3943B7;
+}
+
+body.sidebar-collapse .main-sidebar nav .nav-item .submenu li a {
+    font-size: 11px;
+    padding: 6px 7px;
+}
+
+body.sidebar-collapse .main-sidebar nav .nav-item:hover .submenu {
+    height: fit-content;
+    position: absolute;
+    background: #fff;
+    left: 34px;
+    visibility: visible;
+    width: 175px;
+    top: 33px;
+    border-bottom-right-radius: 10px;
+    padding-left: 34px;
+    padding-bottom: 13px;
+    padding-right: 10px;
+    padding-top: 6px;
+    border-right: 1px solid #e5e7eb
+}
+
+body.sidebar-collapse .main-sidebar nav .menu-list {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.main-sidebar nav .nav-item.has-submenu .nav-parent {
+    position: relative;
+}
+
+.main-sidebar nav .nav-item.has-submenu .nav-parent::after {
+    font-family: "iconsax-outline" !important;
+    content: "\e924";
+    right: 0;
+    position: absolute;
+    font-size: 10px;
+}
+
+.submenu.collapse {
+    visibility: hidden;
+    height: 0;
+    margin-top: 0px;
+}
+
+.submenu.collapse.show {
+    visibility: unset;
+    height: unset;
+    margin-top: 10px;
+}
+
+.main-sidebar nav .nav-item.has-submenu .submenu {
+    padding-left: 7px;
+    padding-right: 0;
+}
+
+.main-sidebar nav .nav-item.has-submenu .submenu li {
+    border-left: 1px solid #CFCFCF;
+    font-size: 12px;
+}
+
+.main-sidebar nav .nav-item.has-submenu .submenu li a {
+    padding: 8px 9px;
+    display: block;
+    margin-left: 10px;
+}
+
+.main-sidebar nav .nav-item.has-submenu .submenu li a:hover {
+    color: #3943B7;
+}
+
+.nav-item .nav-parent {
+    @apply px-2 py-1 items-center;
+}
+.nav-item.active .nav-parent {
+    @apply rounded-sm transition-all !bg-[#C0C0C033];
+}
+
+.nav-item .nav-parent:hover {
+    @apply rounded-sm transition-all !bg-[#C0C0C033];
+}
+
+.nav-item .nav-parent:hover svg {
+    fill: #fff !important;
+}
+
+.nav-item .nav-parent:hover i {
+    color: #fff !important;
+}
+
+.nav-item.active .nav-parent svg {
+    fill: #fff !important;
+}
+
+.nav-item.active .nav-parent i {
+    color: #fff !important;
+}
+
+.nav-item .nav-parent svg {
+    fill: #787575;
+    width: 17px !important;
+}
+.bottom-navigation .nav-item .nav-parent svg{
+    width: 20px !important;
+    height: 20px !important;
+}
+
+.nav-item.active .submenu .active {
+    background-color: #3943B7;
+    color: #fff !important;
+    border-radius: 6px;
+}
+
+.nav-item .nav-parent[disabled="true"] {
+    color: #ddd;
+    cursor: not-allowed !important;
+}
+
+.nav-item .nav-parent[disabled="true"] i {
+    color: #ddd !important;
+}
+
+.nav-item .nav-parent[disabled="true"] svg {
+    fill: #ddd !important;
+}
+
+.main-sidebar nav .nav-item.has-submenu .submenu li a[disabled="true"] {
+    color: #ddd !important;
+    cursor: not-allowed !important;
+}
+
+.table-action thead tr th:last-child{
+    text-align: end;
+}
+.has-error input,.has-error select ,.has-error textarea{
+    border-color: red !important;
+}
+.has-error .error-text{
+    color: red !important;
+    white-space: pre-wrap;
+    white-space: -moz-pre-wrap;
+    white-space: -pre-wrap;
+    white-space: -o-pre-wrap;
+    word-wrap: break-word;
+}
+.paginate-notification{
+    background-color: transparent !important;
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+}
+
+.pre-text-content{
+    white-space: pre-wrap;
+    white-space: -moz-pre-wrap;
+    white-space: -pre-wrap;
+    white-space: -o-pre-wrap;
+    word-wrap: break-word;
+}
+textarea.border-red{
+    border-color: #FF0000 !important;
+}
+
+
+.shadow-progress {
+    box-shadow: 0px 0px 4px 0px #00000040;
+}
+
+
+@keyframes progress-stripes {
+    from { background-position: 1rem 0; }
+    to { background-position: 0 0; }
+}
+.progress-animated {
+    background-image: linear-gradient(
+        45deg,
+        rgba(255,255,255,0.15) 25%,
+        transparent 25%,
+        transparent 50%,
+        rgba(255,255,255,0.15) 50%,
+        rgba(255,255,255,0.15) 75%,
+        transparent 75%,
+        transparent
+    );
+    background-size: 1rem 1rem;
+    animation: progress-stripes 1s linear infinite;
+}
+
+
+@keyframes loading-stripe {
+    0% {
+        left: -50%;
+    }
+    100% {
+        left: 100%;
+    }
+}
+
+.animate-loading-stripe {
+    animation: loading-stripe 1.5s linear infinite;
+}
