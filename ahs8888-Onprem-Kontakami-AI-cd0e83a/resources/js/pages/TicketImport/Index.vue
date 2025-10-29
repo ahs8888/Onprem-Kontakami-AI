@@ -7,6 +7,26 @@
                 <p class="mt-2 text-gray-600">
                     Link recordings to tickets by importing CSV or Excel file
                 </p>
+                
+                <!-- Help Section -->
+                <div class="mt-4 bg-blue-50 border-l-4 border-blue-400 p-4 rounded-r-lg">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <i class="isax icon-info-circle text-blue-600 text-xl"></i>
+                        </div>
+                        <div class="ml-3">
+                            <h3 class="text-sm font-medium text-blue-800">How it works</h3>
+                            <div class="mt-2 text-sm text-blue-700">
+                                <ol class="list-decimal list-inside space-y-1">
+                                    <li>Upload your CSV or Excel file containing ticket information</li>
+                                    <li>Map your file columns to system fields</li>
+                                    <li>Review validation results and matched recordings</li>
+                                    <li>Import and link recordings to tickets</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Step Indicator -->
