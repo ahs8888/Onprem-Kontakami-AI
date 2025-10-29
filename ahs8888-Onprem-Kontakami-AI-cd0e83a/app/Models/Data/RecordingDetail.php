@@ -24,6 +24,12 @@ class RecordingDetail extends Model
             'error_log' => 'array',
             'requires_ticket' => 'boolean',
             'linked_at' => 'datetime',
+            'pii_detected' => 'boolean',
+            'pii_types' => 'array',
+            'is_encrypted' => 'boolean',
+            'cleaning_metadata' => 'array',
+            'processed_at' => 'datetime',
+            'last_retry_at' => 'datetime',
         ];
     }
     
