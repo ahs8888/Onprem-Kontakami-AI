@@ -23,10 +23,12 @@ import { ref, shallowRef, watch, onMounted } from "vue";
 import { Head, usePage } from "@inertiajs/vue3";
 import IcMenuRecording from "@/Components/Icon/Menu/icMenuRecording.vue";
 import IcMenuSetting from "@/Components/Icon/Menu/icMenuSetting.vue";
+import IcMenuTicket from "@/Components/Icon/Menu/icMenuTicket.vue";
 import UploadProgress from "@/Components/Layout/UploadProgress.vue";
 import { provideUploadState } from "@/Hooks/uploadState";
 import IcMenuRecordingActive from "@/Components/Icon/Menu/icMenuRecordingActive.vue";
 import IcMenuSettingActive from "@/Components/Icon/Menu/icMenuSettingActive.vue";
+import IcMenuTicketActive from "@/Components/Icon/Menu/icMenuTicketActive.vue";
 const uploadState = provideUploadState();
 
 
