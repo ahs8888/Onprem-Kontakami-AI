@@ -23,7 +23,12 @@ class RecordingController extends Controller
 
     public function index()
     {
-        return Inertia::render('Recording/Index');
+        // NEW: Get count of unlinked recordings
+        $unlinkedCount = RecordingDetail::unlinked()->count();
+        
+        return Inertia::render('Recording/Index', [
+            'unlinkedCount' => $unlinkedCount
+        ]);
     }
 
     public function datatable(Request $request)
