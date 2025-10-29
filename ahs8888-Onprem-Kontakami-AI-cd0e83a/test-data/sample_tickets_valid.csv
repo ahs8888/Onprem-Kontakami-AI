@@ -1,0 +1,6 @@
+recording_name,ticket_id,customer_name,agent_name,call_intent,call_outcome,ticket_url
+recording_001.wav,TKT-12345,John Doe,Agent Smith,Support Request,Resolved,https://tickets.example.com/12345
+recording_002.wav,TKT-67890,Jane Smith,Agent Jones,Complaint,Pending,https://tickets.example.com/67890
+recording_003.wav,TKT-11111,Bob Wilson,Agent Brown,Billing Issue,Resolved,https://tickets.example.com/11111
+recording_004.wav,TKT-22222,Alice Johnson,Agent Davis,Technical Support,In Progress,https://tickets.example.com/22222
+recording_005.wav,TKT-33333,Charlie Brown,Agent Miller,Account Question,Resolved,https://tickets.example.com/33333
