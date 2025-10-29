@@ -4,6 +4,55 @@
     </ButtonPrimary>
 
     <input type="file" webkitdirectory directory multiple hidden @change="handleFolderUpload" id="file-upload" />
+    
+    <!-- NEW: Confirmation Modal -->
+    <div v-if="showConfirmModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" @click="closeModal">
+        <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4" @click.stop>
+            <h3 class="text-lg font-semibold mb-4">Upload Configuration</h3>
+            
+            <div class="mb-4">
+                <p class="text-sm text-gray-600 mb-2">
+                    <strong>Folder:</strong> {{ tempFolderName }}
+                </p>
+                <p class="text-sm text-gray-600 mb-4">
+                    <strong>Files:</strong> {{ tempFiles.length }} file(s)
+                </p>
+            </div>
+            
+            <!-- Requires Ticket Checkbox -->
+            <div class="mb-6">
+                <label class="flex items-start cursor-pointer">
+                    <input 
+                        type="checkbox" 
+                        v-model="requiresTicket"
+                        class="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                    />
+                    <div class="ml-3">
+                        <span class="text-sm font-medium text-gray-900">These recordings require ticket linking</span>
+                        <p class="text-xs text-gray-500 mt-1">
+                            Check this if you plan to link these recordings to tickets later. 
+                            Unchecked recordings won't appear in the "Unlinked" list.
+                        </p>
+                    </div>
+                </label>
+            </div>
+            
+            <div class="flex justify-end gap-3">
+                <button 
+                    @click="closeModal" 
+                    class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md transition"
+                >
+                    Cancel
+                </button>
+                <button 
+                    @click="confirmUpload" 
+                    class="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md transition"
+                >
+                    Upload
+                </button>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script setup lang="ts">
