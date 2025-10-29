@@ -34,6 +34,7 @@ class UploadClouds extends Command
     public function handle()
     {
         $recordingId = $this->argument("id");
+        $cloudService = new CloudTransferService();
 
         $token = Setting::where("key", "token")->value("value");
         $recording = Recording::where("id", $recordingId)->whereNotNull("clouds_uuid")->first();
@@ -42,22 +43,10 @@ class UploadClouds extends Command
         if ($recording) {
             $this->info("RECORDING ".$recording->name);
             $recs = RecordingDetail::where("recording_id", $recordingId)->where("status", "Success")->where("transfer_cloud", 0)->orderBy("sort", "asc")->get();
-            $files = [];
-            $recIds = [];
-
-            foreach ($recs as $key => $value) {
-                $relativePath = preg_replace('/^\/?storage\//', '', $value->file);
-                $fullPath = storage_path("app/public/" . $relativePath);
-                $sizeInBytes = file_exists($fullPath) ? filesize($fullPath) : 0;
-                $sizeFormatted = formatBytes($sizeInBytes);
-                array_push($recIds, $value->id);
-                array_push($files, [
-                    'filename' => $value->name,
-                    'size' => $sizeFormatted,
-                    'token' => 0,
-                    'transcribe' => $value->transcript
-                ]);
-            }
+            
+            // Prepare files with ticket information
+            $files = $cloudService->prepareRecordingsBatch($recs);
+            $recIds = $recs->pluck('id')->toArray();
 
             $this->info("ADA RECORD " . count($recIds));
             $this->info("ADA FILE " . count($files));
