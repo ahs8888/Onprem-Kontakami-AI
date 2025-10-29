@@ -64,4 +64,8 @@ Route::middleware(['me-auth','idle-logout'])
         Route::post('/ticket-import/parse', [TicketImportController::class, 'parseFile'])->name('ticket-import.parse');
         Route::post('/ticket-import/validate', [TicketImportController::class, 'validateMapping'])->name('ticket-import.validate');
         Route::post('/ticket-import/bulk-link', [TicketImportController::class, 'bulkLink'])->name('ticket-import.bulk-link');
+        
+        // Telemetry Routes
+        Route::get('/status/local', [TelemetryController::class, 'localStatus'])->name('telemetry.local-status');
+        Route::get('/status/health', [TelemetryController::class, 'healthCheck'])->name('telemetry.health');
     });
