@@ -22,7 +22,35 @@ class RecordingDetail extends Model
     {
         return [
             'error_log' => 'array',
+            'requires_ticket' => 'boolean',
+            'linked_at' => 'datetime',
         ];
+    }
+    
+    /**
+     * Scope to get unlinked recordings that require tickets
+     */
+    public function scopeUnlinked($query)
+    {
+        return $query->where('requires_ticket', true)
+                     ->whereNull('ticket_id');
+    }
+    
+    /**
+     * Scope to get linked recordings
+     */
+    public function scopeLinked($query)
+    {
+        return $query->where('requires_ticket', true)
+                     ->whereNotNull('ticket_id');
+    }
+    
+    /**
+     * Accessor for display name with fallback
+     */
+    public function getDisplayNameAttribute($value)
+    {
+        return $value ?? $this->name;
     }
 
     public function recording(): BelongsTo
