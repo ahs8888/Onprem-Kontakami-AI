@@ -57,4 +57,10 @@ Route::middleware(['me-auth','idle-logout'])
         Route::get('/setting/clouds-location', [SettingController::class, 'clouds'])->name("setting.clouds-location");
         Route::get('/setting/access-token', [SettingController::class, 'accessToken'])->name("setting.access-token");
         Route::get('/setting/personal-setting', [SettingController::class, 'personal'])->name("setting.personal-setting");
+        
+        // Ticket Import Routes
+        Route::get('/ticket-import', [TicketImportController::class, 'index'])->name('ticket-import.index');
+        Route::post('/ticket-import/parse', [TicketImportController::class, 'parseFile'])->name('ticket-import.parse');
+        Route::post('/ticket-import/validate', [TicketImportController::class, 'validateMapping'])->name('ticket-import.validate');
+        Route::post('/ticket-import/bulk-link', [TicketImportController::class, 'bulkLink'])->name('ticket-import.bulk-link');
     });
