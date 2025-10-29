@@ -64,9 +64,21 @@ import { useUploadState } from '@/Hooks/uploadState';
 const emit = defineEmits(["fetchData"])
 const uploadState = useUploadState()
 
+// NEW: Modal state
+const showConfirmModal = ref(false)
+const requiresTicket = ref(true) // Default: true
+const tempFiles = ref<File[]>([])
+const tempFolderName = ref('')
+
 const newRecord = () => {
     uploadState.injectId.value = ''
     clickId('file-upload')
+}
+
+const closeModal = () => {
+    showConfirmModal.value = false
+    tempFiles.value = []
+    tempFolderName.value = ''
 }
 
 const handleFolderUpload = async (e: Event) => {
@@ -102,16 +114,29 @@ const handleFolderUpload = async (e: Event) => {
 
     if (invalidFiles.length > 0) {
         const invalidNames = invalidFiles.map(f => f.name).join(', ');
-        showAlert(`Invalid file format detected: ${invalidNames}`   );
+        showAlert(`Invalid file format detected: ${invalidNames}`);
         input.value = '';
         return;
     }
 
-
     const firstPath = files[0].webkitRelativePath;
     const folderName = firstPath.split('/')[0];
-    uploadState.folderName.value = folderName;
+    
+    // NEW: Store temp data and show modal
+    tempFiles.value = files
+    tempFolderName.value = folderName
+    showConfirmModal.value = true
+};
 
+// NEW: Confirm and proceed with upload
+const confirmUpload = async () => {
+    const files = tempFiles.value
+    const folderName = tempFolderName.value
+    
+    // Close modal
+    showConfirmModal.value = false
+    
+    uploadState.folderName.value = folderName;
     uploadState.uploading.value = true;
     uploadState.progress.value = 0;
 
@@ -120,6 +145,7 @@ const handleFolderUpload = async (e: Event) => {
     const formData = new FormData();
     formData.append('folderName', folderName);
     formData.append('injectId', uploadState.injectId.value || '');
+    formData.append('requiresTicket', requiresTicket.value ? '1' : '0'); // NEW: Add requiresTicket
 
     files.forEach((file, index) => {
         formData.append(`files[${index}]`, file);
@@ -159,11 +185,18 @@ const handleFolderUpload = async (e: Event) => {
         }
     } finally {
         uploadState.uploading.value = false;
-        input.value = '';
+        
+        // Clear file input
+        const input = document.getElementById('file-upload') as HTMLInputElement
+        if (input) input.value = ''
+        
+        // Clear temp data
+        tempFiles.value = []
+        tempFolderName.value = ''
 
         window.removeEventListener("beforeunload", handleBeforeUnload);
     }
-};
+}
 
 
 const uploadBatchWithProgress = (formData: FormData) => {
