@@ -266,6 +266,7 @@ class TicketLinkingService
         $linkedCount = 0;
         $failedCount = 0;
         $errors = [];
+        $cloudUpdatesNeeded = []; // Track which recording folders need cloud updates
         
         foreach ($validatedRecords as $record) {
             if ($record['status'] !== 'matched' || empty($record['recording_id'])) {
@@ -288,12 +289,36 @@ class TicketLinkingService
                 'ticket_url' => $record['ticket_url'] ?? null,
             ];
             
+            // Check if already transferred before linking
+            $wasTransferred = $recording->transfer_cloud == 1;
+            
             if ($this->linkRecordingToTicket($recording, $ticketData)) {
                 $linkedCount++;
+                
+                // Track recordings that need cloud update
+                if ($wasTransferred && $recording->recording_id) {
+                    if (!isset($cloudUpdatesNeeded[$recording->recording_id])) {
+                        $cloudUpdatesNeeded[$recording->recording_id] = [];
+                    }
+                    $cloudUpdatesNeeded[$recording->recording_id][] = $recording->id;
+                }
             } else {
                 $failedCount++;
                 $errors[] = "Failed to link recording: {$record['recording_name']}";
             }
+        }
+        
+        // Dispatch bulk cloud updates for each recording folder
+        foreach ($cloudUpdatesNeeded as $recordingId => $detailIds) {
+            Log::info("Dispatching bulk cloud ticket update", [
+                'recording_folder_id' => $recordingId,
+                'detail_count' => count($detailIds)
+            ]);
+            
+            // Note: We're NOT dispatching here because linkRecordingToTicket already dispatches individually
+            // If you want to optimize, you can remove the dispatch from linkRecordingToTicket
+            // and uncomment the line below:
+            // UpdateCloudTicketInfo::dispatch($recordingId, $detailIds);
         }
         
         return [
