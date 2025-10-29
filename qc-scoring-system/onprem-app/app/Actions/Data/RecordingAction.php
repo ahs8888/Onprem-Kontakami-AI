@@ -37,8 +37,10 @@ class RecordingAction
     {
         $recordingId = null;
         $injectId = $request->input('injectId');
+        // NEW: Get requires_ticket flag from request (default: true)
+        $requiresTicket = $request->boolean('requiresTicket', true);
 
-        DB::transaction(function () use ($request, &$recordingId, $injectId) {
+        DB::transaction(function () use ($request, &$recordingId, $injectId, $requiresTicket) {
             $token = Setting::where("key", "token")->first();
             $folderName = trim($request->input('folderName'));
             $files = $request->file('files');
@@ -94,11 +96,14 @@ class RecordingAction
                     $storedPath = $file->storeAs('uploads/' . $folderName, $fileNameStore, 'public');
                     $urlFile = \Storage::url($storedPath);
 
+                    // NEW: Add requires_ticket flag and set initial status
                     $upload = RecordingDetail::create([
                         'name' => $fileName,
                         'file' => $urlFile,
                         'recording_id' => $recording->id,
-                        'sort' => $index + 1 + $existDetails
+                        'sort' => $index + 1 + $existDetails,
+                        'requires_ticket' => $requiresTicket,
+                        'status' => $requiresTicket ? 'unlinked' : null,
                     ]);
                 }
 
