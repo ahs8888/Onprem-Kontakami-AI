@@ -376,9 +376,17 @@ test_plan:
     - "Test column mapping with auto-detection"
     - "Test validation against database"
     - "Test bulk import functionality"
+    - "Test cloud transfer with ticket info (new recordings)"
+    - "Test retroactive cloud updates (existing recordings)"
+    - "Test manual sync command"
+    - "Verify queue jobs dispatching correctly"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
+  cloud_dependency: |
+    Cloud app must implement new endpoint:
+    POST /api/external/v1/recording/update-ticket/{clouds_uuid}
+    And update existing endpoints to accept ticket_info object
 
 agent_communication:
   - agent: "main"
