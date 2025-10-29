@@ -133,6 +133,14 @@ class TicketLinkingService
      */
     public function parseExcel(string $filePath): array
     {
+        // Check if PhpSpreadsheet is available
+        if (!class_exists('PhpOffice\PhpSpreadsheet\IOFactory')) {
+            return [
+                'success' => false,
+                'message' => 'Excel support requires phpoffice/phpspreadsheet package. Please install it with: composer require phpoffice/phpspreadsheet'
+            ];
+        }
+        
         try {
             $spreadsheet = IOFactory::load($filePath);
             $worksheet = $spreadsheet->getActiveSheet();
