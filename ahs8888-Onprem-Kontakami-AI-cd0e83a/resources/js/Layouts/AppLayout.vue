@@ -46,6 +46,15 @@ const menus = ref([
         show: true,
     },
     {
+        name: "Ticket Import",
+        route: route("ticket-import.index"),
+        active: "ticket-import.*",
+        icon: shallowRef(IcMenuTicket),
+        iconPrimary: shallowRef(IcMenuTicketActive),
+        enable: true,
+        show: true,
+    },
+    {
         name: "Setting",
         route: route("setting.clouds-location"),
         active: "setting.*",
