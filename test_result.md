@@ -191,6 +191,102 @@ backend:
         agent: "main"
         comment: "Added routes: ticket-import.index, ticket-import.parse, ticket-import.validate, ticket-import.bulk-link"
 
+  - task: "CloudTransferService - Prepare ticket data for cloud"
+    implemented: true
+    working: "NA"
+    file: "app/Services/CloudTransferService.php"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Created service to prepare recording data with ticket info for cloud transfer. Includes methods for single/batch preparation."
+
+  - task: "UpdateCloudTicketInfo Job - Retroactive cloud updates"
+    implemented: true
+    working: "NA"
+    file: "app/Jobs/UpdateCloudTicketInfo.php"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Queue job to update ticket info in cloud for recordings already transferred. Auto-dispatched when linking recordings. Sends to /api/external/v1/recording/update-ticket/{uuid}"
+
+  - task: "ProcessRecordingBatch Job - Include ticket info"
+    implemented: true
+    working: "NA"
+    file: "app/Jobs/ProcessRecordingBatch.php"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Updated to use CloudTransferService. Now includes ticket information when transferring recordings to cloud."
+
+  - task: "RetryRecording Job - Include ticket info"
+    implemented: true
+    working: "NA"
+    file: "app/Jobs/RetryRecording.php"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Updated to use CloudTransferService for retry transfers with ticket info."
+
+  - task: "RetryUploadClouds Job - Include ticket info"
+    implemented: true
+    working: "NA"
+    file: "app/Jobs/RetryUploadClouds.php"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Updated to use CloudTransferService for batch cloud uploads with ticket info."
+
+  - task: "UploadClouds Command - Include ticket info"
+    implemented: true
+    working: "NA"
+    file: "app/Console/Commands/UploadClouds.php"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Updated to use CloudTransferService for command-line cloud uploads with ticket info."
+
+  - task: "SyncTicketInfoToCloud Command - Manual sync"
+    implemented: true
+    working: "NA"
+    file: "app/Console/Commands/SyncTicketInfoToCloud.php"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "New artisan command for manually syncing ticket info to cloud: php artisan ticket:sync-to-cloud {id} or --all"
+
+  - task: "TicketLinkingService - Auto-dispatch cloud updates"
+    implemented: true
+    working: "NA"
+    file: "app/Services/TicketLinkingService.php"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Updated linkRecordingToTicket() and bulkLinkFromCSV() to automatically dispatch UpdateCloudTicketInfo job when linking recordings already in cloud."
+
 frontend:
   - task: "TicketImport/Index.vue - 4-step CSV import wizard"
     implemented: true
