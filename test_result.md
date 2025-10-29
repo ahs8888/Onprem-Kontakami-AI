@@ -416,3 +416,41 @@ agent_communication:
       5. Start dev servers
       
       See PHASE_5_COMPLETED.md for detailed setup instructions and test scenarios.
+
+  - agent: "main"
+    message: |
+      Phase 6 (Cloud Transfer Logic) implementation complete:
+      
+      Backend Components:
+      - CloudTransferService: Prepares recording data with ticket info for cloud
+      - UpdateCloudTicketInfo Job: Queue job for retroactive cloud updates
+      - Updated all existing cloud transfer jobs/commands to include ticket info:
+        * ProcessRecordingBatch
+        * RetryRecording
+        * RetryUploadClouds
+        * UploadClouds
+      - SyncTicketInfoToCloud: Console command for manual sync
+      - TicketLinkingService: Auto-dispatches cloud updates when linking
+      
+      How It Works:
+      1. New recordings: Ticket info included in initial cloud transfer
+      2. Existing recordings: UpdateCloudTicketInfo job dispatched when ticket linked
+      3. Bulk CSV import: Auto-triggers cloud updates for transferred recordings
+      4. Manual sync: php artisan ticket:sync-to-cloud {id} or --all
+      
+      Cloud App Requirements:
+      - New endpoint: POST /api/external/v1/recording/update-ticket/{uuid}
+      - Update existing endpoints to accept ticket_info object
+      - Store ticket information in cloud database
+      
+      Data Structure:
+      Files now include 'ticket_info' object with:
+      - ticket_id, ticket_url, customer_name, agent_name
+      - call_intent, call_outcome, display_name, linked_at
+      
+      Status: Code complete, ready for testing after:
+      1. Laravel setup (same as Phase 5)
+      2. Queue worker running (php artisan queue:work)
+      3. Cloud app updated to handle ticket_info
+      
+      See PHASE_6_COMPLETED.md for complete documentation.
