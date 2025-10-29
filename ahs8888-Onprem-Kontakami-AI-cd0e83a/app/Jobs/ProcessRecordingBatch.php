@@ -35,6 +35,7 @@ class ProcessRecordingBatch implements ShouldQueue
         $recordingId = $this->recordingId;
         $recording = Recording::where("id", $recordingId)->first();
         $injectId = $this->injectId;
+        $cloudService = new CloudTransferService();
 
         if ($recording) {
             $recs = RecordingDetail::where("recording_id", $recordingId)->where("is_transcript", 0)->orderBy("sort", "asc")->get();
@@ -46,8 +47,6 @@ class ProcessRecordingBatch implements ShouldQueue
             foreach ($recs as $key => $value) {
                 $relativePath = preg_replace('/^\/?storage\//', '', $value->file);
                 $fullPath = storage_path("app/public/" . $relativePath);
-                $sizeInBytes = file_exists($fullPath) ? filesize($fullPath) : 0;
-                $sizeFormatted = formatBytes($sizeInBytes);
 
                 $responseTranscript = (new RecordingAction())->transcribeAudioGemini($relativePath);
                 $transcript = $responseTranscript->json;
@@ -56,12 +55,10 @@ class ProcessRecordingBatch implements ShouldQueue
                     $contentTranscript = $transcript['candidates'][0]['content']['parts'][0]['text'] ?? 'No response text';
                     $totalToken = $transcript['usageMetadata']['totalTokenCount'];
 
-                    array_push($files, [
-                        'filename' => $value->name,
-                        'size' => $sizeFormatted,
-                        'token' => $totalToken,
-                        'transcribe' => $contentTranscript
-                    ]);
+                    // Use CloudTransferService to prepare data with ticket info
+                    $value->transcript = $contentTranscript;
+                    $value->token = $totalToken;
+                    array_push($files, $cloudService->prepareRecordingData($value, $totalToken));
 
                     array_push($recIds, $value->id);
 
