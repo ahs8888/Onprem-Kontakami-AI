@@ -25,6 +25,9 @@ return Application::configure(basePath: dirname(__DIR__))
             
             Route::middleware('web')
                 ->group(base_path('routes/admin/ticket.php'));
+            
+            Route::middleware('web')
+                ->group(base_path('routes/admin/ticket-api.php'));
         },
     )
     ->withMiddleware(function (Middleware $middleware) {
