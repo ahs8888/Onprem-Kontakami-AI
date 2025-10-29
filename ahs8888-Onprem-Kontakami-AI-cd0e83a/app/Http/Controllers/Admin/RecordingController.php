@@ -26,8 +26,25 @@ class RecordingController extends Controller
     {
         $ticketService = app(TicketLinkingService::class);
         
+        // Get ticket linking statistics
+        $totalRecordings = RecordingDetail::count();
+        $linkedRecordings = RecordingDetail::where('requires_ticket', true)
+            ->whereNotNull('ticket_id')
+            ->count();
+        $unlinkedRecordings = RecordingDetail::where('requires_ticket', true)
+            ->where(function($query) {
+                $query->whereNull('ticket_id')
+                      ->orWhere('status', 'unlinked');
+            })
+            ->count();
+        
         return Inertia::render('Recording/Index', [
-            'unlinkedCount' => $ticketService->getUnlinkedCount()
+            'unlinkedCount' => $unlinkedRecordings,
+            'ticketStats' => [
+                'total' => $totalRecordings,
+                'linked' => $linkedRecordings,
+                'unlinked' => $unlinkedRecordings
+            ]
         ]);
     }
 
