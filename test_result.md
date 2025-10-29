@@ -298,6 +298,17 @@ frontend:
     status_history:
       - working: "NA"
         agent: "main"
+        comment: "Complete 4-step wizard: 1) File upload with drag-drop, 2) Column mapping, 3) Validation preview, 4) Import results. Includes auto-column detection. PHASE 7: Added 'How it works' guide and sample CSV format helper."
+  - task: "TicketImport/Index.vue - 4-step CSV import wizard"
+    implemented: true
+    working: "NA"
+    file: "resources/js/pages/TicketImport/Index.vue"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
         comment: "Complete 4-step wizard: 1) File upload with drag-drop, 2) Column mapping, 3) Validation preview, 4) Import results. Includes auto-column detection."
 
   - task: "ColumnMapper Component - Map CSV columns to fields"
