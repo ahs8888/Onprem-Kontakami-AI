@@ -37,8 +37,9 @@ class RecordingAction
     {
         $recordingId = null;
         $injectId = $request->input('injectId');
+        $requiresTicket = $request->input('requiresTicket', true); // Default to true
 
-        DB::transaction(function () use ($request, &$recordingId, $injectId) {
+        DB::transaction(function () use ($request, &$recordingId, $injectId, $requiresTicket) {
             $token = Setting::where("key", "token")->first();
             $folderName = trim($request->input('folderName'));
             $files = $request->file('files');
@@ -98,7 +99,9 @@ class RecordingAction
                         'name' => $fileName,
                         'file' => $urlFile,
                         'recording_id' => $recording->id,
-                        'sort' => $index + 1 + $existDetails
+                        'sort' => $index + 1 + $existDetails,
+                        'requires_ticket' => $requiresTicket,
+                        'status' => $requiresTicket ? 'unlinked' : 'no_ticket_needed'
                     ]);
                 }
 
