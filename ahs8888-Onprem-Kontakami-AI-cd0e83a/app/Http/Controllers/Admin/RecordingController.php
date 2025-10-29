@@ -24,7 +24,11 @@ class RecordingController extends Controller
 
     public function index()
     {
-        return Inertia::render('Recording/Index');
+        $ticketService = app(TicketLinkingService::class);
+        
+        return Inertia::render('Recording/Index', [
+            'unlinkedCount' => $ticketService->getUnlinkedCount()
+        ]);
     }
 
     public function datatable(Request $request)
