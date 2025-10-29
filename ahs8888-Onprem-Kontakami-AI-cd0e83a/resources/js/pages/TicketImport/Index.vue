@@ -80,6 +80,28 @@
                     <p class="text-gray-600 mb-6">
                         Upload a CSV or Excel file containing ticket information with recording filenames.
                     </p>
+                    
+                    <!-- Sample Format -->
+                    <details class="mb-6 bg-gray-50 rounded-lg p-4">
+                        <summary class="cursor-pointer font-medium text-gray-700 flex items-center">
+                            <i class="isax icon-document-text mr-2"></i>
+                            View Sample CSV Format
+                        </summary>
+                        <div class="mt-3 text-sm">
+                            <p class="text-gray-600 mb-2">Your file should include these columns:</p>
+                            <div class="bg-white p-3 rounded border border-gray-200 overflow-x-auto">
+                                <code class="text-xs">
+recording_name,ticket_id,customer_name,agent_name,call_intent,call_outcome,ticket_url<br>
+recording_001.wav,TKT-12345,John Doe,Agent Smith,Support,Resolved,https://tickets.com/12345<br>
+recording_002.wav,TKT-67890,Jane Smith,Agent Jones,Complaint,Pending,https://tickets.com/67890
+                                </code>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-2">
+                                <strong>Required:</strong> recording_name, ticket_id | 
+                                <strong>Optional:</strong> customer_name, agent_name, call_intent, call_outcome, ticket_url
+                            </p>
+                        </div>
+                    </details>
 
                     <!-- Upload Zone -->
                     <div 
