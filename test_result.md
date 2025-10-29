@@ -353,7 +353,7 @@ metadata:
   version: "1.0"
   test_sequence: 0
   run_ui: false
-  phase_completed: "Phase 5 - CSV Import Frontend"
+  phase_completed: "Phase 6 - Cloud Transfer with Ticket Information"
   notes: |
     Laravel environment setup required before testing:
     - Copy .env.example to .env and configure database
@@ -361,6 +361,12 @@ metadata:
     - Run php artisan migrate
     - Run npm install / yarn install
     - Start Laravel and Vite dev servers
+    - Ensure queue worker is running: php artisan queue:work
+    
+    Cloud App Changes Required:
+    - Implement /api/external/v1/recording/update-ticket/{uuid} endpoint
+    - Update existing endpoints to accept ticket_info object
+    - Store ticket information in cloud database
 
 test_plan:
   current_focus:
