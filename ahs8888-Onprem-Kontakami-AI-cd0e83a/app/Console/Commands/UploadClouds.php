@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Models\Data\Setting;
 use App\Models\Data\Recording;
 use App\Jobs\RetryUploadClouds;
+use App\Services\CloudTransferService;
 use Illuminate\Console\Command;
 use App\Jobs\UpdateRecordingStatus;
 use Illuminate\Support\Facades\Bus;
