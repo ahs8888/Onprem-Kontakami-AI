@@ -1,9 +1,16 @@
 <template>
     <AppLayout title="Recording List">
+        <!-- Ticket Linking Statistics -->
+        <TicketStats 
+            v-if="ticketStats" 
+            :stats="ticketStats" 
+            class="px-4 md:px-8 pt-4"
+        />
+        
         <!-- Unlinked Recordings Banner -->
         <div 
             v-if="unlinkedCount > 0" 
-            class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6 rounded-r-lg shadow-sm"
+            class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6 rounded-r-lg shadow-sm mx-4 md:mx-8"
         >
             <div class="flex items-center justify-between">
                 <div class="flex items-center">
@@ -32,15 +39,22 @@
 </template>
 <script setup lang="ts">
 import RecordingList from "@/Components/Module/Recording/RecordingList.vue"
+import TicketStats from "@/Components/Module/Recording/TicketStats.vue"
 import { usePaginate } from "@/Hooks/usePaginate";
 import AppLayout from "@/Layouts/AppLayout.vue"
 
 interface Props {
     unlinkedCount?: number;
+    ticketStats?: {
+        total: number;
+        linked: number;
+        unlinked: number;
+    };
 }
 
 const props = withDefaults(defineProps<Props>(), {
-    unlinkedCount: 0
+    unlinkedCount: 0,
+    ticketStats: () => ({ total: 0, linked: 0, unlinked: 0 })
 });
 
 const paginate = usePaginate({
