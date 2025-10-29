@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Models\Data\Setting;
 use App\Models\Data\Recording;
 use App\Models\Data\RecordingDetail;
+use App\Services\CloudTransferService;
 use Illuminate\Support\Facades\Http;
 use App\Actions\Data\RecordingAction;
 use Illuminate\Queue\SerializesModels;
