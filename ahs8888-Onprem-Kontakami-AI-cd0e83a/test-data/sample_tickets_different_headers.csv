@@ -1,0 +1,3 @@
+filename,case_id,client,staff,reason,result,link
+recording_001.wav,TKT-12345,John Doe,Agent Smith,Support Request,Resolved,https://tickets.example.com/12345
+recording_002.wav,TKT-67890,Jane Smith,Agent Jones,Complaint,Pending,https://tickets.example.com/67890
