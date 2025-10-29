@@ -1,0 +1,82 @@
+<analysis>
+The AI engineer successfully analyzed the user's dual QC scoring application (on-premise and cloud). Initially, the user provided high-level requirements and then uploaded two separate GitHub repositories:  (Laravel+Vue) and  (Laravel+Vue). A significant early decision was confirming to migrate from MongoDB (initial template) to MySQL, which the user's provided apps already used.
+
+A key challenge was the discrepancy between the initial development environment (FastAPI/React) and the user's Laravel/Vue applications, which rendered the preview button unusable. This led to a crucial decision regarding the project structure: to perform development within the original cloned Laravel directories for both apps (Option A) and later integrate them into a monorepo for GitHub, rather than attempting to work directly in a monorepo or a hybrid approach that would lead to context and syncing issues. The previous engineer completed Phase 1 (database schema) through Phase 4 (CSV import backend) for the on-prem app and prepared for Phase 5 (frontend). A  file was created to ensure smooth transition.
+</analysis>
+
+<product_requirements>
+The user's QC scoring app consists of two parts: an on-prem application and a cloud application. The on-prem app handles recording uploads (folder upload) and Speech-to-Text (STT), transferring results to the cloud. The cloud app analyzes text and performs scoring. The overarching goal is to enable AI micro-decisions by improving the information, analysis, and decision layers of the system.
+
+Specific enhancements include:
+-   **Database:** Migrate from MongoDB (initial system setup) to MySQL (user's preference and existing apps).
+-   **AI Provider:** Make AI provider dynamic, allowing users to choose between OpenAI (and three models) and Gemini (and three models). Currently uses Gemini 2.5 Flash.
+-   **Ticket Linking:** Implement a system to link recordings with ticket information (Ticket ID, Customer Name, Agent Name, Call Intent, Call Outcome, Ticket URL). This linking process, including CSV/Excel import and filename matching, must occur on the on-prem app. The cloud app will passively receive linked data or updates. The process should be optional.
+-   **App Structure:** Maintain two separate applications (on-prem and cloud) but ultimately save them in a monorepo structure on GitHub.
+-   **Code Quality:** Implement modular API routing for backend (Laravel), separating routes by functional modules (e.g., auth, ticket, recording) for maintainability and scalability.
+</product_requirements>
+
+<key_technical_concepts>
+-   **Laravel (Backend):** Primary framework for both on-premise and cloud applications.
+-   **Vue.js (Frontend):** Used for building the user interfaces with Inertia.js.
+-   **Inertia.js:** Connects Laravel backend with Vue.js frontend, enabling single-page app experience.
+-   **MySQL:** Chosen relational database for both applications.
+-   **Modular Routing:** Organizing API and web routes into separate files by feature/module.
+-   **Background Jobs/Queues:** For processing tasks like STT and cloud transfers (e.g., Laravel Jobs).
+</key_technical_concepts>
+
+<code_architecture>
+The project currently has two main Laravel+Vue applications cloned into separate directories in :
+-    (On-Prem App)
+-    (Cloud App)
+
+The development is focused on the  located at . The final GitHub structure will be a monorepo () containing  and .
+
+**Detailed Directory Structure (On-Prem App):**
+requiresTicketunlinkedCountrecording_details
+
+**Changes Summary:**
+-   **RecordingDetail.php:** Added , , , , , , , ,  fields. Added accessors and scopes.
+-   **TicketLinkingService.php:** New service for all ticket linking logic: , , , , , .
+-   **RecordingAction.php:** Modified  to accept  boolean and set initial .
+-   **RecordingController.php:** Updated  to pass  to the frontend.
+-   **TicketImportController.php:** New controller with , , ,  methods for CSV import workflow.
+-   **TicketLinkController.php:** New optional API controller for getting unlinked counts/lists and single linking/unlinking.
+-   **Migrations:** Two new migration files to add ticket linking columns and extend the  enum in the  table.
+-   **:** Updated to load modular route files from  and .
+-   **Routes:**  and  were refactored to delegate to new modular files , , and .
+-   **Frontend (Vue):**  updated with a Requires Ticket checkbox.  updated to display an Unlinked Recordings banner.  and its sub-components  and  are being created to implement the 4-step CSV import wizard.
+</code_architecture>
+
+<pending_tasks>
+-   Complete Phase 5: Build the remaining CSV Import Frontend UI (ColumnMapper, ValidationResults components, and full ).
+-   Complete Phase 6: Update Cloud Transfer logic to send ticket information and create a retroactive update job.
+-   Complete Phase 7: Add navigation and UI polish.
+-   Complete Phase 8: Thorough testing and validation of the entire ticket linking workflow.
+-   Enhance the Cloud App (after on-prem is complete).
+-   Final monorepo organization and push to GitHub (after both apps are enhanced).
+</pending_tasks>
+
+<current_work>
+Immediately before this summary request, the previous AI engineer had just completed Phase 4 (Build CSV Import Backend) and started Phase 5 (Build CSV Import Frontend).
+
+**Current State of On-Prem App ():**
+-   **Database:** Migrations created and applied (, ).  table now supports ticket linking fields.
+-   **Backend Logic:**
+    -    updated with new  fields, , and  for ticket linking.
+    -    created with comprehensive methods for display name generation, single recording linking, CSV/Excel parsing, validation, and bulk linking.
+    -    modified to accept  during folder upload.
+    -    updated to fetch and pass  to the frontend.
+    -    created, providing endpoints for parsing, validating, and bulk-linking ticket data from CSV/Excel.
+    -    created (optional API controller) for granular ticket linking operations.
+    -   Modular routing structure implemented, with  configured to load routes from , , and .
+-   **Frontend UI (Partial):**
+    -    has been updated to include a Requires Ticket checkbox within a confirmation modal during folder upload.
+    -    is updated to display a banner indicating the count of unlinked recordings.
+    -   The basic directory structure for  has been created, and the  (the main 4-step wizard for ticket import) has been successfully created.
+-   **Documentation:** , , ,  are present. A  file has also been created.
+-   **Preview Status:** The Preview button in the environment is not functional due to the project residing in a different directory () than the default  and  template. Manual testing via  is required.
+</current_work>
+
+<optional_next_step>
+Continue with Phase 5: Build the  component for the CSV import frontend.
+</optional_next_step>
