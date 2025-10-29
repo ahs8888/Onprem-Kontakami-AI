@@ -60,6 +60,9 @@ class TicketLinkingService
             // Generate display name
             $displayName = $this->generateDisplayName($recording, $ticketData);
             
+            // Check if recording was already transferred to cloud
+            $wasTransferred = $recording->transfer_cloud == 1;
+            
             // Update recording with ticket information
             $recording->update([
                 'display_name' => $displayName,
@@ -76,8 +79,19 @@ class TicketLinkingService
             Log::info("Recording linked to ticket", [
                 'recording_id' => $recording->id,
                 'ticket_id' => $ticketData['ticket_id'] ?? 'N/A',
-                'display_name' => $displayName
+                'display_name' => $displayName,
+                'was_transferred' => $wasTransferred
             ]);
+            
+            // If recording was already transferred to cloud, dispatch update job
+            if ($wasTransferred && $recording->recording_id) {
+                Log::info("Dispatching cloud ticket update", [
+                    'recording_id' => $recording->id,
+                    'folder_id' => $recording->recording_id
+                ]);
+                
+                UpdateCloudTicketInfo::dispatch($recording->recording_id, [$recording->id]);
+            }
             
             return true;
         } catch (\Exception $e) {
