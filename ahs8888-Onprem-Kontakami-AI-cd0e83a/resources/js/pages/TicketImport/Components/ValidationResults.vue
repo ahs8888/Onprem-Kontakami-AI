@@ -142,26 +142,33 @@
         </div>
 
         <!-- Action Buttons -->
-        <div class="mt-8 flex justify-between">
+        <div class="mt-8 flex justify-between items-center">
             <button 
                 @click="$emit('back')"
-                class="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors"
+                class="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors inline-flex items-center"
             >
-                ← Back to Mapping
+                <i class="isax icon-arrow-left mr-2"></i>
+                Back to Mapping
             </button>
-            <button 
-                @click="handleImport"
-                :disabled="matchedCount === 0 || importing"
-                class="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
-            >
-                <span v-if="importing">
-                    <div class="inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                    Importing...
-                </span>
-                <span v-else>
-                    Import {{ matchedCount }} Recording(s) →
-                </span>
-            </button>
+            <div class="flex items-center space-x-4">
+                <div v-if="matchedCount > 0" class="text-sm text-gray-600">
+                    Ready to import <strong class="text-green-600">{{ matchedCount }}</strong> recording(s)
+                </div>
+                <button 
+                    @click="handleImport"
+                    :disabled="matchedCount === 0 || importing"
+                    class="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors inline-flex items-center"
+                >
+                    <span v-if="importing" class="inline-flex items-center">
+                        <div class="inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                        Importing...
+                    </span>
+                    <span v-else class="inline-flex items-center">
+                        Import {{ matchedCount }} Recording(s)
+                        <i class="isax icon-arrow-right ml-2"></i>
+                    </span>
+                </button>
+            </div>
         </div>
     </div>
 </template>
