@@ -1,0 +1,85 @@
+# OS Files
+.DS_Store
+Thumbs.db
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Dependencies
+/onprem-app/vendor/
+/onprem-app/node_modules/
+/cloud-app/vendor/
+/cloud-app/node_modules/
+
+# Build Files
+/onprem-app/public/hot
+/onprem-app/public/build
+/onprem-app/public/storage
+/onprem-app/bootstrap/ssr
+/cloud-app/public/hot
+/cloud-app/public/build
+/cloud-app/public/storage
+/cloud-app/bootstrap/ssr
+
+# Storage
+/onprem-app/storage/*.key
+/onprem-app/storage/app/*
+!/onprem-app/storage/app/.gitignore
+/onprem-app/storage/framework/cache/*
+!/onprem-app/storage/framework/cache/.gitignore
+/onprem-app/storage/framework/sessions/*
+!/onprem-app/storage/framework/sessions/.gitignore
+/onprem-app/storage/framework/views/*
+!/onprem-app/storage/framework/views/.gitignore
+/onprem-app/storage/logs/*
+!/onprem-app/storage/logs/.gitignore
+
+/cloud-app/storage/*.key
+/cloud-app/storage/app/*
+!/cloud-app/storage/app/.gitignore
+/cloud-app/storage/framework/cache/*
+!/cloud-app/storage/framework/cache/.gitignore
+/cloud-app/storage/framework/sessions/*
+!/cloud-app/storage/framework/sessions/.gitignore
+/cloud-app/storage/framework/views/*
+!/cloud-app/storage/framework/views/.gitignore
+/cloud-app/storage/logs/*
+!/cloud-app/storage/logs/.gitignore
+
+# Testing
+/onprem-app/coverage/
+/cloud-app/coverage/
+.phpunit.result.cache
+
+# Laravel
+/onprem-app/auth.json
+/cloud-app/auth.json
+/onprem-app/.phpunit.cache
+/cloud-app/.phpunit.cache
+
+# Yarn
+yarn-error.log
+
+# NPM
+npm-debug.log*
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# Temporary files
+*.tmp
+*.temp
+
+# Documentation build artifacts
+/docs/build/
