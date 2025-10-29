@@ -101,3 +101,208 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: |
+  QC Scoring Application - On-Premise Ticket Linking System
+  
+  User has two Laravel+Vue applications:
+  1. On-Prem App: Handles recording uploads and STT
+  2. Cloud App: Performs text analysis and scoring
+  
+  Current Phase: Implement ticket linking system for on-prem app
+  - Link recordings to ticket information (Ticket ID, Customer Name, Agent Name, etc.)
+  - CSV/Excel import workflow for bulk linking
+  - Optional ticket requirement per recording
+  - Display unlinked recordings count
+  - Generate display names from ticket data
+  
+  Tech Stack: Laravel 12 + Vue 3 + Inertia.js + MySQL
+
+backend:
+  - task: "TicketLinkingService - Core ticket linking logic"
+    implemented: true
+    working: "NA"
+    file: "app/Services/TicketLinkingService.php"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Created service with display name generation, CSV/Excel parsing, validation, and bulk linking methods. Excel support requires PhpSpreadsheet installation."
+
+  - task: "TicketImportController - CSV import endpoints"
+    implemented: true
+    working: "NA"
+    file: "app/Http/Controllers/Admin/TicketImportController.php"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Created controller with index, parseFile, validateMapping, and bulkLink methods. Routes added to web.php."
+
+  - task: "RecordingDetail Model - Add ticket fields and scopes"
+    implemented: true
+    working: "NA"
+    file: "app/Models/Data/RecordingDetail.php"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Updated model with casts for requires_ticket and linked_at. Added scopes for linked/unlinked recordings. Added display_name accessor."
+
+  - task: "RecordingController - Add unlinked count"
+    implemented: true
+    working: "NA"
+    file: "app/Http/Controllers/Admin/RecordingController.php"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Updated index method to fetch and pass unlinkedCount to frontend using TicketLinkingService."
+
+  - task: "Database Migrations - Add ticket linking fields"
+    implemented: true
+    working: "NA"
+    file: "database/migrations/2025_10_29_062341_add_ticket_linking_to_recording_details_table.php"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Migration files exist. Adds display_name, ticket_id, ticket_url, customer_name, agent_name, call_intent, call_outcome, requires_ticket, linked_at to recording_details table."
+
+  - task: "Routes - Ticket import routes"
+    implemented: true
+    working: "NA"
+    file: "routes/web.php"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Added routes: ticket-import.index, ticket-import.parse, ticket-import.validate, ticket-import.bulk-link"
+
+frontend:
+  - task: "TicketImport/Index.vue - 4-step CSV import wizard"
+    implemented: true
+    working: "NA"
+    file: "resources/js/pages/TicketImport/Index.vue"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Complete 4-step wizard: 1) File upload with drag-drop, 2) Column mapping, 3) Validation preview, 4) Import results. Includes auto-column detection."
+
+  - task: "ColumnMapper Component - Map CSV columns to fields"
+    implemented: true
+    working: "NA"
+    file: "resources/js/pages/TicketImport/Components/ColumnMapper.vue"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Created component with dropdowns for mapping CSV columns. Shows preview values. Validates required fields (recording_name, ticket_id)."
+
+  - task: "ValidationResults Component - Display validation results"
+    implemented: true
+    working: "NA"
+    file: "resources/js/pages/TicketImport/Components/ValidationResults.vue"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Created component with tabbed interface showing matched/unmatched/failed records. Summary cards with counts. Import button enabled only if matches exist."
+
+  - task: "Recording/Index.vue - Unlinked recordings banner"
+    implemented: true
+    working: "NA"
+    file: "resources/js/pages/Recording/Index.vue"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Added yellow banner showing unlinked recordings count with 'Import Tickets' button. Banner only shows when unlinkedCount > 0."
+
+  - task: "AppLayout.vue - Add Ticket Import menu"
+    implemented: true
+    working: "NA"
+    file: "resources/js/Layouts/AppLayout.vue"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Added 'Ticket Import' menu item between Recording and Setting. Created icon components icMenuTicket.vue and icMenuTicketActive.vue."
+
+metadata:
+  created_by: "main_agent"
+  version: "1.0"
+  test_sequence: 0
+  run_ui: false
+  phase_completed: "Phase 5 - CSV Import Frontend"
+  notes: |
+    Laravel environment setup required before testing:
+    - Copy .env.example to .env and configure database
+    - Run composer install (includes PhpSpreadsheet)
+    - Run php artisan migrate
+    - Run npm install / yarn install
+    - Start Laravel and Vite dev servers
+
+test_plan:
+  current_focus:
+    - "Complete Laravel environment setup"
+    - "Run migrations to add ticket linking fields"
+    - "Test CSV file upload and parsing"
+    - "Test column mapping with auto-detection"
+    - "Test validation against database"
+    - "Test bulk import functionality"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "main"
+    message: |
+      Phase 5 (CSV Import Frontend) implementation complete. All components created:
+      
+      Backend:
+      - TicketLinkingService with CSV/Excel parsing, validation, bulk linking
+      - TicketImportController with 4 endpoints
+      - Updated RecordingController and RecordingDetail model
+      - Routes configured in web.php
+      
+      Frontend:
+      - TicketImport/Index.vue - Complete 4-step wizard
+      - ColumnMapper.vue - Column mapping with preview
+      - ValidationResults.vue - Results display with tabs
+      - Recording/Index.vue - Unlinked banner
+      - AppLayout.vue - Added menu item
+      
+      Status: Code complete, ready for testing after Laravel environment setup.
+      
+      Requirements for testing:
+      1. Laravel environment setup (.env configuration)
+      2. Composer install (PhpSpreadsheet dependency)
+      3. Run migrations
+      4. NPM/Yarn install
+      5. Start dev servers
+      
+      See PHASE_5_COMPLETED.md for detailed setup instructions and test scenarios.
