@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Auth\AuthLoginController;
 use App\Http\Controllers\Admin\RecordingController;
 use App\Http\Controllers\Admin\TicketImportController;
+use App\Http\Controllers\Admin\TelemetryController;
 use App\Http\Controllers\Jobs\TranscriptController;
 use App\Http\Controllers\Auth\AuthRegisterController;
 use App\Http\Controllers\Auth\AuthResetPasswordController;
