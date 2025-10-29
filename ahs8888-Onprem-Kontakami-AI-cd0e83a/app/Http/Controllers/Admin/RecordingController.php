@@ -6,6 +6,7 @@ use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Models\Data\Recording;
 use App\Services\RecordingService;
+use App\Services\TicketLinkingService;
 use App\Traits\BadRequestException;
 use App\Http\Controllers\Controller;
 use App\Actions\Data\RecordingAction;
