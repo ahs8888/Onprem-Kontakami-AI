@@ -1,0 +1,117 @@
+version: '3.8'
+
+services:
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    container_name: onprem_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: onprem_kontakami
+      MYSQL_USER: laravel_user
+      MYSQL_PASSWORD: laravel_password
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - onprem_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot_password"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # PHP-FPM with Laravel
+  app:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: onprem_app
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html
+      - ./storage:/var/www/html/storage
+      - ./bootstrap/cache:/var/www/html/bootstrap/cache
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - DB_CONNECTION=mysql
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_DATABASE=onprem_kontakami
+      - DB_USERNAME=laravel_user
+      - DB_PASSWORD=laravel_password
+      - QUEUE_CONNECTION=database
+    networks:
+      - onprem_network
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  # Nginx Web Server
+  nginx:
+    image: nginx:alpine
+    container_name: onprem_nginx
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - onprem_network
+    depends_on:
+      - app
+
+  # Node.js for Vite (Frontend Development)
+  node:
+    image: node:20-alpine
+    container_name: onprem_node
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html
+      - node_modules:/var/www/html/node_modules
+    ports:
+      - "5173:5173"
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
+    networks:
+      - onprem_network
+
+  # Laravel Queue Worker
+  queue:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: onprem_queue
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html
+    environment:
+      - APP_ENV=local
+      - DB_CONNECTION=mysql
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_DATABASE=onprem_kontakami
+      - DB_USERNAME=laravel_user
+      - DB_PASSWORD=laravel_password
+      - QUEUE_CONNECTION=database
+    command: php artisan queue:work --tries=3 --timeout=300
+    networks:
+      - onprem_network
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+networks:
+  onprem_network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+  node_modules:
