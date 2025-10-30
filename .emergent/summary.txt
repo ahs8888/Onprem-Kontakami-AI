@@ -1,82 +1,72 @@
 <analysis>
-The AI engineer successfully analyzed the user's dual QC scoring application (on-premise and cloud). Initially, the user provided high-level requirements and then uploaded two separate GitHub repositories:  (Laravel+Vue) and  (Laravel+Vue). A significant early decision was confirming to migrate from MongoDB (initial template) to MySQL, which the user's provided apps already used.
+The AI engineer's work, spanning from app inception (0 to 1), involved developing an on-premise Laravel/Vue application with a focus on QC scoring, STT, and eventually advanced AI-driven micro-decisions. Initial efforts concentrated on migrating from MongoDB to MySQL and establishing a robust backend for recording and ticket data management, including a comprehensive CSV/Excel import system.
 
-A key challenge was the discrepancy between the initial development environment (FastAPI/React) and the user's Laravel/Vue applications, which rendered the preview button unusable. This led to a crucial decision regarding the project structure: to perform development within the original cloned Laravel directories for both apps (Option A) and later integrate them into a monorepo for GitHub, rather than attempting to work directly in a monorepo or a hybrid approach that would lead to context and syncing issues. The previous engineer completed Phase 1 (database schema) through Phase 4 (CSV import backend) for the on-prem app and prepared for Phase 5 (frontend). A  file was created to ensure smooth transition.
+A significant pivot occurred in Phase 9, where the focus shifted to implementing critical AI features: STT quality evaluation, selective upload, privacy (PII detection/encryption), and telemetry. The engineer successfully integrated these complex functionalities into the on-prem app, but encountered environmental limitations for testing. The final interactions revolved around clarifying the implemented AI features, explaining testing challenges within the current environment, and proposing a Docker Compose setup for efficient local testing. The engineer also detailed the end-to-end flow from recording upload to cloud transfer, highlighting AI decisions and encryption.
 </analysis>
 
 <product_requirements>
-The user's QC scoring app consists of two parts: an on-prem application and a cloud application. The on-prem app handles recording uploads (folder upload) and Speech-to-Text (STT), transferring results to the cloud. The cloud app analyzes text and performs scoring. The overarching goal is to enable AI micro-decisions by improving the information, analysis, and decision layers of the system.
+The goal is to enhance a dual QC scoring application (on-premise for recording/STT, cloud for analysis/scoring) to enable AI micro-decisions.
 
-Specific enhancements include:
--   **Database:** Migrate from MongoDB (initial system setup) to MySQL (user's preference and existing apps).
--   **AI Provider:** Make AI provider dynamic, allowing users to choose between OpenAI (and three models) and Gemini (and three models). Currently uses Gemini 2.5 Flash.
--   **Ticket Linking:** Implement a system to link recordings with ticket information (Ticket ID, Customer Name, Agent Name, Call Intent, Call Outcome, Ticket URL). This linking process, including CSV/Excel import and filename matching, must occur on the on-prem app. The cloud app will passively receive linked data or updates. The process should be optional.
--   **App Structure:** Maintain two separate applications (on-prem and cloud) but ultimately save them in a monorepo structure on GitHub.
--   **Code Quality:** Implement modular API routing for backend (Laravel), separating routes by functional modules (e.g., auth, ticket, recording) for maintainability and scalability.
+**Key Enhancements:**
+1.  **Database Migration:** From MongoDB (initial) to MySQL.
+2.  **AI Provider:** Dynamic selection between OpenAI and Gemini (Gemini 2.5 Flash used).
+3.  **Ticket Linking (On-prem):** Optional system to link recordings with ticket data (ID, Customer, Agent, Intent, Outcome, URL) via CSV/Excel import and filename matching. Data to be passively received by the cloud app.
+4.  **App Structure:** Maintain separate on-prem and cloud apps, eventually in a monorepo.
+5.  **Code Quality:** Modular API routing for Laravel backend.
+6.  **Local STT Quality Evaluation:** Implement confidence scoring, automatic re-processing, or re-recording if confidence is low.
+7.  **Selective Upload Logic:** Only upload high-confidence, non-sensitive segments to save bandwidth and cloud processing.
+8.  **Metadata Capture:** Capture filename, agent ID, customer ID, timestamp, confidence, duration for each recording.
+9.  **Telemetry Endpoint ():** Report on-prem queue size, bandwidth usage, and upload status to the cloud.
+10. **Encryption & Compression:** Encrypt and batch-compress uploads for privacy (PII safety) and efficiency.
 </product_requirements>
 
 <key_technical_concepts>
--   **Laravel (Backend):** Primary framework for both on-premise and cloud applications.
--   **Vue.js (Frontend):** Used for building the user interfaces with Inertia.js.
--   **Inertia.js:** Connects Laravel backend with Vue.js frontend, enabling single-page app experience.
--   **MySQL:** Chosen relational database for both applications.
--   **Modular Routing:** Organizing API and web routes into separate files by feature/module.
--   **Background Jobs/Queues:** For processing tasks like STT and cloud transfers (e.g., Laravel Jobs).
+-   **Laravel:** PHP framework for backend development.
+-   **Vue.js + Inertia.js:** Frontend framework with SPA connector.
+-   **MySQL:** Relational database for persistent storage.
+-   **Gemini AI:** Used for Speech-to-Text and AI filtering.
+-   **AES-256 Encryption:** File encryption for privacy.
+-   **Modular Architecture:** Organized routes, controllers, services, and Vue components.
+-   **Docker Compose:** Proposed for local development environment setup.
 </key_technical_concepts>
 
 <code_architecture>
-The project currently has two main Laravel+Vue applications cloned into separate directories in :
--    (On-Prem App)
--    (Cloud App)
-
-The development is focused on the  located at . The final GitHub structure will be a monorepo () containing  and .
+The project involves two Laravel+Vue applications: an On-Prem App () and a Cloud App (). Development is currently focused on the On-Prem App.
 
 **Detailed Directory Structure (On-Prem App):**
-requiresTicketunlinkedCountrecording_details
-
-**Changes Summary:**
--   **RecordingDetail.php:** Added , , , , , , , ,  fields. Added accessors and scopes.
--   **TicketLinkingService.php:** New service for all ticket linking logic: , , , , , .
--   **RecordingAction.php:** Modified  to accept  boolean and set initial .
--   **RecordingController.php:** Updated  to pass  to the frontend.
--   **TicketImportController.php:** New controller with , , ,  methods for CSV import workflow.
--   **TicketLinkController.php:** New optional API controller for getting unlinked counts/lists and single linking/unlinking.
--   **Migrations:** Two new migration files to add ticket linking columns and extend the  enum in the  table.
--   **:** Updated to load modular route files from  and .
--   **Routes:**  and  were refactored to delegate to new modular files , , and .
--   **Frontend (Vue):**  updated with a Requires Ticket checkbox.  updated to display an Unlinked Recordings banner.  and its sub-components  and  are being created to implement the 4-step CSV import wizard.
+requiresTicketunlinkedCount/status/local/status/localphpoffice/phpspreadsheet
 </code_architecture>
 
 <pending_tasks>
--   Complete Phase 5: Build the remaining CSV Import Frontend UI (ColumnMapper, ValidationResults components, and full ).
--   Complete Phase 6: Update Cloud Transfer logic to send ticket information and create a retroactive update job.
--   Complete Phase 7: Add navigation and UI polish.
--   Complete Phase 8: Thorough testing and validation of the entire ticket linking workflow.
--   Enhance the Cloud App (after on-prem is complete).
+-   Enhance the Cloud App: Implement new endpoints, update existing ones to accept ticket and AI filtering information, and apply necessary database changes for new ticket/AI fields.
 -   Final monorepo organization and push to GitHub (after both apps are enhanced).
 </pending_tasks>
 
 <current_work>
-Immediately before this summary request, the previous AI engineer had just completed Phase 4 (Build CSV Import Backend) and started Phase 5 (Build CSV Import Frontend).
+Immediately prior to this summary, the AI engineer completed **Phase 9: AI Micro-Decisions & Quality Control** for the on-prem application. This phase implemented the critical missing features identified after a gap analysis.
 
 **Current State of On-Prem App ():**
--   **Database:** Migrations created and applied (, ).  table now supports ticket linking fields.
--   **Backend Logic:**
-    -    updated with new  fields, , and  for ticket linking.
-    -    created with comprehensive methods for display name generation, single recording linking, CSV/Excel parsing, validation, and bulk linking.
-    -    modified to accept  during folder upload.
-    -    updated to fetch and pass  to the frontend.
-    -    created, providing endpoints for parsing, validating, and bulk-linking ticket data from CSV/Excel.
-    -    created (optional API controller) for granular ticket linking operations.
-    -   Modular routing structure implemented, with  configured to load routes from , , and .
--   **Frontend UI (Partial):**
-    -    has been updated to include a Requires Ticket checkbox within a confirmation modal during folder upload.
-    -    is updated to display a banner indicating the count of unlinked recordings.
-    -   The basic directory structure for  has been created, and the  (the main 4-step wizard for ticket import) has been successfully created.
--   **Documentation:** , , ,  are present. A  file has also been created.
--   **Preview Status:** The Preview button in the environment is not functional due to the project residing in a different directory () than the default  and  template. Manual testing via  is required.
+-   **STT Quality Evaluation & Transcript Cleaning:**
+    -    created to clean transcripts (remove filler words, noise tags, detect timestamps/speakers).
+    -    updated to store confidence score, quality score, cleaning metadata.
+-   **AI Micro-Decisions & Selective Upload Logic:**
+    -    created to evaluate recording quality, detect PII, and make upload decisions (e.g., discard low-confidence recordings, redact PII). Thresholds are dynamic via .
+    -    updated to integrate  and  for pre-upload filtering.
+-   **Privacy & Encryption:**
+    -    created for AES-256 file encryption and batch compression.
+    -    updated to encrypt recordings before cloud transfer.
+    -   Cloud app will require decryption capabilities (a pending task).
+-   **Telemetry & Monitoring:**
+    -    created to log telemetry data to MySQL ( table).
+    -    created with a  endpoint.
+    -    created for telemetry routes.
+-   **Database:** New migrations (, ) created, and  model updated to support these new fields.
+-   **Documentation:** , , and  have been created to guide future setup and testing.
+
+**Testing Environment Challenge:**
+The on-prem Laravel application cannot be directly tested in the current Kubernetes environment because it lacks PHP, Composer, and MySQL runtime. The Preview button is also non-functional due to the tech stack and directory mismatch. The AI engineer is actively recommending creating a Docker Compose setup for local testing to the user.
 </current_work>
 
 <optional_next_step>
-Continue with Phase 5: Build the  component for the CSV import frontend.
+Create a Docker Compose setup for the on-prem Laravel application to enable local testing.
 </optional_next_step>
